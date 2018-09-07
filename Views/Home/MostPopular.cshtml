@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <title>Dojo Secret</title>
+    @using DojoSecret.Models
+    @model DashboardModel
+    @using System.Linq
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="/">Covfefe</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="logout">Logout <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="Interests">Interests </a>
+                <a class="nav-item nav-link" href="Ninja2Cat">Ninja2Cat </a>
+                <a class="nav-item nav-link" href="ClientEvents">Client-side events </a>
+                <a class="nav-item nav-link" href="Dashboard">Back to Dashboard </a>
+                                <a class="nav-item nav-link" href="Weather">WeatherAPI data </a>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <h1>Welcome, @ViewBag.User.First_Name @ViewBag.User.Last_Name!</h1>
+    <table>
+        @foreach (var i in ViewBag.Messages)
+        {
+            <tr>
+                <td>@i.Content - (@i.Created_At.ToString("MMMM dd, yyyy, h:mm tt")) @i.likes.Count likes &nbsp; 
+                    @if (@ViewBag.User.Id == @i.CreatorId)
+                    {
+                    <b>You posted this! &nbsp;</b> <a href="DeleteMost/@i.Id">Delete</a>
+                    }
+                    else
+                    {
+                        int Count = 0;
+                        @foreach(var liker in @i.likes)
+                        {
+                            @if(@liker.Promoter == @ViewBag.User)
+                            {
+                                Count = 1;
+                            }
+                        }
+                        if (Count == 1)
+                        {
+                            <b>You Liked this!</b>
+                        }
+                        else
+                        {
+                            <a href="LikeMost/@i.Id">Like</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+</body>
+</html>

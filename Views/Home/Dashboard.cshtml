@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    <title>Covfefe Dashboard</title>
+    @using DojoSecret.Models
+    @model DashboardModel
+    @using System.Linq
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <a class="navbar-brand" href="/">Covfefe</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav">
+                <a class="nav-item nav-link active" href="logout">Logout <span class="sr-only">(current)</span></a>
+                <a class="nav-item nav-link" href="Interests">Interests </a>
+                <a class="nav-item nav-link" href="Ninja2Cat">Ninja2Cat </a>
+                <a class="nav-item nav-link" href="ClientEvents">Client-side events </a>
+                <a class="nav-item nav-link" href="MostPopular">Most Popular Covfefes </a>
+                <a class="nav-item nav-link" href="Weather">WeatherAPI data </a>
+            </div>
+        </div>
+    </nav>
+    <br>
+    <h1>Welcome, @ViewBag.User.First_Name @ViewBag.User.Last_Name!</h1>
+    <div class="container">
+        <table>
+            <form class="form" asp-action="PostMessage" asp-controller="Home" method="post">
+                <tr>
+                    <td><label asp-for="secrets.Content">Tell us a Covfefe:</label></td>
+                </tr>
+                <tr>
+                    <td><textarea name="Content" cols="120" rows="3"></textarea></td>
+                    <td><span asp-validation-for="secrets.Content"></span></td>
+                </tr>
+                <tr>
+                    <td style="float:right"><button class="btn btn-primary">Spill Your Covfefe</button></td>
+                </tr>
+            </form>
+        </table>
+    </div>
+    @foreach(var i in ViewBag.Secrets)
+    {
+        <div class="container">
+            <p>@i.Creator.First_Name @i.Creator.Last_Name - @i.Created_At.ToString("MMMM dd, yyyy"), Likes: @i.likes.Count</p>
+            <p style="text-indent: 20px;">@i.Content</p>
+            @if (@ViewBag.User.Id == @i.CreatorId)
+            {
+                <a href="Delete/@i.Id">Delete</a>
+            }
+            else
+            {
+                int count = 0;
+                @foreach(var like in @i.likes)
+                {
+                    @if(@like.PromoterId == @ViewBag.User.Id)
+                    {
+                        count = 1;
+                    }
+                }
+                if (count == 1)
+                {
+                    <a href="Undo/@i.Id">Un-Like</a>
+                }
+                else
+                {
+                    <a href="Like/@i.Id">Like</a>
+                }
+            }
+        </div>
+    }
+</body>
+</html>
